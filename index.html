@@ -5,17 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Изменение размеров изображений</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        #imagePreview {
+            max-width: 700px; /* Максимальная ширина */
+            max-height: 100%; /* Высота будет динамической */
+            object-fit: contain; /* Сохранение пропорций изображения */
+        }
+    </style>
 </head>
 <body class="flex items-center justify-center h-screen bg-gray-100">
     <div class="text-center">
         <label for="imageInput" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded cursor-pointer hover:bg-blue-700 transition duration-300">Выберите изображение</label>
         <input type="file" id="imageInput" class="hidden">
+
+        <!-- Область для предпросмотра изображения -->
+        <div class="mt-4 border border-gray-300 flex justify-center items-center">
+            <img id="imagePreview" alt="Предпросмотр изображения" class="hidden">
+        </div>
+
         <canvas id="canvas" class="mt-4 border border-gray-300"></canvas>
         <button id="resizeButton" class="mt-4 bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-700 transition duration-300">Изменить размер</button>
     </div>
 
     <script>
         const input = document.getElementById('imageInput');
+        const imgPreview = document.getElementById('imagePreview');
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
 
@@ -26,8 +40,10 @@
 
             reader.onload = function(event) {
                 img.src = event.target.result;
+                imgPreview.src = event.target.result; // Устанавливаем src для предпросмотра
+                imgPreview.classList.remove('hidden'); // Показываем изображение
                 img.onload = function() {
-                    // Установите новые размеры
+                    // Установите новые размеры для canvas
                     const newWidth = 200; // Новая ширина
                     const newHeight = 200; // Новая высота
                     canvas.width = newWidth;
