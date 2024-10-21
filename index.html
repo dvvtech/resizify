@@ -35,7 +35,6 @@
             <label for="preserveAspectRatio">Сохранять пропорции</label>
         </div>
 
-        <canvas id="canvas" class="mt-4 border border-gray-300"></canvas>
         <button id="resizeButton" class="mt-4 bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-700 transition duration-300">Изменить размер</button>
     </div>
 
@@ -47,8 +46,7 @@
         const widthInput = document.getElementById('widthInput');
         const heightInput = document.getElementById('heightInput');
         const preserveAspectRatioCheckbox = document.getElementById('preserveAspectRatio');
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
+
         let img = new Image(); // Создаем объект изображения вне обработчика
 
         input.addEventListener('change', function(e) {
@@ -66,11 +64,6 @@
                     // Заполняем поля ширины и высоты значениями фактического размера изображения
                     widthInput.value = img.width; // Ширина изображения
                     heightInput.value = img.height; // Высота изображения
-
-                    // Устанавливаем размеры для canvas равными фактическим размерам изображения
-                    //canvas.width = img.width;
-                    //canvas.height = img.height;
-                    //ctx.drawImage(img, 0, 0, img.width, img.height);
                 };
             };
             reader.readAsDataURL(file);
@@ -94,16 +87,23 @@
             const newWidth = parseInt(widthInput.value) || 200; // Получаем значение ширины или используем 200 по умолчанию
             const newHeight = parseInt(heightInput.value) || 200; // Получаем значение высоты или используем 200 по умолчанию
 
-            // Устанавливаем размеры для canvas
+            // Создаем URL для нового изображения
+            const canvas = document.createElement('canvas');
             canvas.width = newWidth;
             canvas.height = newHeight;
+            const ctx = canvas.getContext('2d');
 
-            // Рисуем изображение на canvas с новыми размерами
-            ctx.clearRect(0, 0, canvas.width, canvas.height); // Очищаем canvas перед рисованием
             ctx.drawImage(img, 0, 0, newWidth, newHeight); // Используем объект img
 
             const dataURL = canvas.toDataURL('image/png');
-            console.log(dataURL); // Здесь можно использовать отмасштабированное изображение
+
+            // Создаем временную ссылку для скачивания
+            const link = document.createElement('a');
+            link.href = dataURL;
+            link.download = 'resized_image.png'; // Имя файла при скачивании
+            document.body.appendChild(link);
+            link.click(); // Имитируем клик по ссылке для скачивания
+            document.body.removeChild(link); // Удаляем ссылку из документа
         });
     </script>
 </body>
