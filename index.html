@@ -22,9 +22,9 @@
             reader.onload = function(event) {
                 img.src = event.target.result;
                 img.onload = function() {
-                    // ���������� ����� �������//
-                    const newWidth = 200; // ����� ������
-                    const newHeight = 200; // ����� ������
+                    // Задаем новые размеры изображения
+                    const newWidth = 200; 
+                    const newHeight = 200;
                     canvas.width = newWidth;
                     canvas.height = newHeight;
                     ctx.drawImage(img, 0, 0, newWidth, newHeight);
@@ -35,7 +35,7 @@
 
         document.getElementById('resizeButton').addEventListener('click', function() {
             const dataURL = canvas.toDataURL('image/png');
-            console.log(dataURL); // ����� ����� ������������ ������������������ �����������
+            console.log(dataURL); // Здесь можно использовать отмасштабированное изображение
         });
     </script>
 </body>
