@@ -2,12 +2,17 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Изменение размеров изображений</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-    <input type="file" id="imageInput">
-    <canvas id="canvas"></canvas>
-    <button id="resizeButton">Изменить размер</button>
+<body class="flex items-center justify-center h-screen bg-gray-100">
+    <div class="text-center">
+        <label for="imageInput" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded cursor-pointer hover:bg-blue-700 transition duration-300">Выберите изображение</label>
+        <input type="file" id="imageInput" class="hidden">
+        <canvas id="canvas" class="mt-4 border border-gray-300"></canvas>
+        <button id="resizeButton" class="mt-4 bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-700 transition duration-300">Изменить размер</button>
+    </div>
 
     <script>
         const input = document.getElementById('imageInput');
@@ -22,9 +27,9 @@
             reader.onload = function(event) {
                 img.src = event.target.result;
                 img.onload = function() {
-                    // Задаем новые размеры изображения
-                    const newWidth = 200; 
-                    const newHeight = 200;
+                    // Установите новые размеры
+                    const newWidth = 200; // Новая ширина
+                    const newHeight = 200; // Новая высота
                     canvas.width = newWidth;
                     canvas.height = newHeight;
                     ctx.drawImage(img, 0, 0, newWidth, newHeight);
