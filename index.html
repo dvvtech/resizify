@@ -23,6 +23,12 @@
             <img id="imagePreview" alt="Предпросмотр изображения" class="hidden">
         </div>
 
+        <!-- Поля для ввода ширины и высоты -->
+        <div id="dimensionInputs" class="mt-4 hidden">
+            <input type="number" id="widthInput" placeholder="Ширина" class="border p-2 rounded mr-2">
+            <input type="number" id="heightInput" placeholder="Высота" class="border p-2 rounded">
+        </div>
+
         <canvas id="canvas" class="mt-4 border border-gray-300"></canvas>
         <button id="resizeButton" class="mt-4 bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-700 transition duration-300">Изменить размер</button>
     </div>
@@ -30,6 +36,9 @@
     <script>
         const input = document.getElementById('imageInput');
         const imgPreview = document.getElementById('imagePreview');
+        const dimensionInputs = document.getElementById('dimensionInputs');
+        const widthInput = document.getElementById('widthInput');
+        const heightInput = document.getElementById('heightInput');
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
 
@@ -42,6 +51,8 @@
                 img.src = event.target.result;
                 imgPreview.src = event.target.result; // Устанавливаем src для предпросмотра
                 imgPreview.classList.remove('hidden'); // Показываем изображение
+                dimensionInputs.classList.remove('hidden'); // Показываем поля для ввода
+
                 img.onload = function() {
                     // Установите новые размеры для canvas
                     const newWidth = 200; // Новая ширина
@@ -55,6 +66,17 @@
         });
 
         document.getElementById('resizeButton').addEventListener('click', function() {
+            const newWidth = parseInt(widthInput.value) || 200; // Получаем значение ширины или используем 200 по умолчанию
+            const newHeight = parseInt(heightInput.value) || 200; // Получаем значение высоты или используем 200 по умолчанию
+
+            // Устанавливаем размеры для canvas
+            canvas.width = newWidth;
+            canvas.height = newHeight;
+
+            // Рисуем изображение на canvas с новыми размерами
+            ctx.clearRect(0, 0, canvas.width, canvas.height); // Очищаем canvas перед рисованием
+            ctx.drawImage(imgPreview, 0, 0, newWidth, newHeight);
+
             const dataURL = canvas.toDataURL('image/png');
             console.log(dataURL); // Здесь можно использовать отмасштабированное изображение
         });
