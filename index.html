@@ -41,25 +41,27 @@
         const heightInput = document.getElementById('heightInput');
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
+        let img = new Image(); // Создаем объект изображения вне обработчика
 
         input.addEventListener('change', function(e) {
             const file = e.target.files[0];
-            const img = new Image();
             const reader = new FileReader();
 
             reader.onload = function(event) {
-                img.src = event.target.result;
+                img.src = event.target.result; // Устанавливаем src для изображения
                 imgPreview.src = event.target.result; // Устанавливаем src для предпросмотра
                 imgPreview.classList.remove('hidden'); // Показываем изображение
                 dimensionInputs.classList.remove('hidden'); // Показываем поля для ввода
 
                 img.onload = function() {
-                    // Установите новые размеры для canvas
-                    const newWidth = 200; // Новая ширина
-                    const newHeight = 200; // Новая высота
-                    canvas.width = newWidth;
-                    canvas.height = newHeight;
-                    ctx.drawImage(img, 0, 0, newWidth, newHeight);
+                    // Заполняем поля ширины и высоты значениями фактического размера изображения
+                    widthInput.value = img.width; // Ширина изображения
+                    heightInput.value = img.height; // Высота изображения
+
+                    // Устанавливаем размеры для canvas равными фактическим размерам изображения
+                    //canvas.width = img.width;
+                    //canvas.height = img.height;
+                    //ctx.drawImage(img, 0, 0, img.width, img.height);
                 };
             };
             reader.readAsDataURL(file);
@@ -75,7 +77,7 @@
 
             // Рисуем изображение на canvas с новыми размерами
             ctx.clearRect(0, 0, canvas.width, canvas.height); // Очищаем canvas перед рисованием
-            ctx.drawImage(imgPreview, 0, 0, newWidth, newHeight);
+            ctx.drawImage(img, 0, 0, newWidth, newHeight); // Используем объект img
 
             const dataURL = canvas.toDataURL('image/png');
             console.log(dataURL); // Здесь можно использовать отмасштабированное изображение
