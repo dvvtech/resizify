@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Изменение размеров изображений</title>
+</head>
+<body>
+    <input type="file" id="imageInput">
+    <canvas id="canvas"></canvas>
+    <button id="resizeButton">Изменить размер</button>
+
+    <script>
+        const input = document.getElementById('imageInput');
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        input.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            const img = new Image();
+            const reader = new FileReader();
+
+            reader.onload = function(event) {
+                img.src = event.target.result;
+                img.onload = function() {
+                    // ���������� ����� �������//
+                    const newWidth = 200; // ����� ������
+                    const newHeight = 200; // ����� ������
+                    canvas.width = newWidth;
+                    canvas.height = newHeight;
+                    ctx.drawImage(img, 0, 0, newWidth, newHeight);
+                };
+            };
+            reader.readAsDataURL(file);
+        });
+
+        document.getElementById('resizeButton').addEventListener('click', function() {
+            const dataURL = canvas.toDataURL('image/png');
+            console.log(dataURL); // ����� ����� ������������ ������������������ �����������
+        });
+    </script>
+</body>
+</html>
