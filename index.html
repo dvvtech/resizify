@@ -35,7 +35,8 @@
             <label for="preserveAspectRatio">Сохранять пропорции</label>
         </div>
 
-        <button id="resizeButton" class="mt-4 bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-700 transition duration-300">Изменить размер</button>
+        <!-- Кнопка для изменения размера (скрыта по умолчанию) -->
+        <button id="resizeButton" class="mt-4 bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-700 transition duration-300 hidden">Изменить размер</button>
     </div>
 
     <script>
@@ -46,6 +47,7 @@
         const widthInput = document.getElementById('widthInput');
         const heightInput = document.getElementById('heightInput');
         const preserveAspectRatioCheckbox = document.getElementById('preserveAspectRatio');
+        const resizeButton = document.getElementById('resizeButton');
 
         let img = new Image(); // Создаем объект изображения вне обработчика
 
@@ -59,6 +61,7 @@
                 imgPreview.classList.remove('hidden'); // Показываем изображение
                 dimensionInputs.classList.remove('hidden'); // Показываем поля для ввода
                 preserveAspectRatioContainer.classList.remove('hidden'); // Показываем чекбокс
+                resizeButton.classList.remove('hidden'); // Показываем кнопку "Изменить размер"
 
                 img.onload = function() {
                     // Заполняем поля ширины и высоты значениями фактического размера изображения
@@ -83,7 +86,7 @@
             }
         });
 
-        document.getElementById('resizeButton').addEventListener('click', function() {
+        resizeButton.addEventListener('click', function() {
             const newWidth = parseInt(widthInput.value) || 200; // Получаем значение ширины или используем 200 по умолчанию
             const newHeight = parseInt(heightInput.value) || 200; // Получаем значение высоты или используем 200 по умолчанию
 
