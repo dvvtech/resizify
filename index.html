@@ -14,33 +14,36 @@
 <body class="flex items-center justify-center h-screen bg-gradient-to-r from-blue-500 to-purple-600">
     <div class="absolute top-4 left-4 text-white text-3xl font-bold">Resizify</div>
     <div class="text-center bg-white bg-opacity-80 p-6 rounded-lg shadow-lg">
-        <label for="imageInput" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded cursor-pointer hover:bg-blue-700 transition duration-300">Выберите изображение</label>
-        <input type="file" id="imageInput" class="hidden">
-
         <!-- Область для предпросмотра изображения -->
         <div class="mt-4 border border-gray-300 flex justify-center items-center relative">
             <img id="imagePreview" alt="Предпросмотр изображения" class="hidden max-w-full max-h-96 object-contain">
         </div>
 
-        <!-- Поля для ввода ширины и высоты -->
-        <div id="dimensionInputs" class="mt-4 hidden">
-            <input type="number" id="widthInput" placeholder="Ширина" class="border p-2 rounded mr-2">
-            <input type="number" id="heightInput" placeholder="Высота" class="border p-2 rounded">
+        <!-- Контейнер для элементов управления -->
+        <div class="mt-4 flex flex-col items-end">
+            <label for="imageInput" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded cursor-pointer hover:bg-blue-700 transition duration-300">Выберите изображение</label>
+            <input type="file" id="imageInput" class="hidden">
+
+            <!-- Поля для ввода ширины и высоты -->
+            <div id="dimensionInputs" class="mt-4 hidden">
+                <input type="number" id="widthInput" placeholder="Ширина" class="border p-2 rounded mr-2">
+                <input type="number" id="heightInput" placeholder="Высота" class="border p-2 rounded">
+            </div>
+
+            <!-- Чекбокс для сохранения пропорций -->
+            <div id="preserveAspectRatioContainer" class="mt-4 hidden">
+                <input type="checkbox" id="preserveAspectRatio" checked>
+                <label for="preserveAspectRatio">Сохранять пропорции</label>
+            </div>
+
+            <!-- Кнопка для изменения размера (скрыта по умолчанию) -->
+            <button id="resizeButton" class="mt-4 bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-700 transition duration-300 hidden">Изменить размер</button>
         </div>
 
-        <!-- Чекбокс для сохранения пропорций -->
-        <div id="preserveAspectRatioContainer" class="mt-4 hidden">
-            <input type="checkbox" id="preserveAspectRatio" checked>
-            <label for="preserveAspectRatio">Сохранять пропорции</label>
-        </div>
-
-        <!-- Кнопка для изменения размера (скрыта по умолчанию) -->
-        <button id="resizeButton" class="mt-4 bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-700 transition duration-300 hidden">Изменить размер</button>
-
-        <!-- Кнопки для поворота изображения -->
-        <div class="mt-4">
+        <!-- Кнопки для поворота изображения вынесены сюда -->
+        <div class="mt-4 flex justify-end">
             <button id="rotateClockwise" class="bg-yellow-500 text-white font-semibold py-2 px-4 rounded hover:bg-yellow-700 transition duration-300">Повернуть по часовой стрелке</button>
-            <button id="rotateCounterClockwise" class="bg-red-500 text-white font-semibold py-2 px-4 rounded hover:bg-red-700 transition duration-300">Повернуть против часовой стрелки</button>
+            <button id="rotateCounterClockwise" class="bg-red-500 text-white font-semibold py-2 px-4 rounded hover:bg-red-700 transition duration-300 ml-2">Повернуть против часовой стрелки</button>
         </div>
     </div>
 
@@ -98,11 +101,21 @@
 
             // Создаем URL для нового изображения
             const canvas = document.createElement('canvas');
-            canvas.width = newWidth;
-            canvas.height = newHeight;
             const ctx = canvas.getContext('2d');
 
-            ctx.drawImage(img, 0, 0, newWidth, newHeight); // Используем объект img
+            // Устанавливаем размеры канваса в зависимости от текущего угла поворота
+            if (currentRotation % 180 !== 0) {
+                canvas.width = newHeight; // Ширина и высота меняются местами
+                canvas.height = newWidth;
+            } else {
+                canvas.width = newWidth;
+                canvas.height = newHeight;
+            }
+
+            // Сдвигаем контекст канваса, чтобы изображение было правильно выровнено
+            ctx.translate(canvas.width / 2, canvas.height / 2);
+            ctx.rotate(currentRotation * Math.PI / 180); // Применяем поворот
+            ctx.drawImage(img, -newWidth / 2, -newHeight / 2, newWidth, newHeight); // Рисуем изображение
 
             const dataURL = canvas.toDataURL('image/png');
 
@@ -125,7 +138,7 @@
             updateImageRotation();
         });
 
-        function updateImageRotation() {
+                function updateImageRotation() {
             imgPreview.style.transform = `rotate(${currentRotation}deg)`; // Применяем поворот к изображению
 
             // Обновляем размеры полей ввода в зависимости от текущего поворота
