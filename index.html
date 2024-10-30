@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Изменение размеров изображений</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        #imagePreview {
+            transition: transform 0.5s ease; /* Плавный переход при повороте */
+        }
+    </style>
 </head>
 <body class="flex items-center justify-center h-screen bg-gradient-to-r from-blue-500 to-purple-600">
     <div class="absolute top-4 left-4 text-white text-3xl font-bold">Resizify</div>
@@ -13,7 +18,7 @@
         <input type="file" id="imageInput" class="hidden">
 
         <!-- Область для предпросмотра изображения -->
-        <div class="mt-4 border border-gray-300 flex justify-center items-center">
+        <div class="mt-4 border border-gray-300 flex justify-center items-center relative">
             <img id="imagePreview" alt="Предпросмотр изображения" class="hidden max-w-full max-h-96 object-contain">
         </div>
 
@@ -31,6 +36,12 @@
 
         <!-- Кнопка для изменения размера (скрыта по умолчанию) -->
         <button id="resizeButton" class="mt-4 bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-700 transition duration-300 hidden">Изменить размер</button>
+
+        <!-- Кнопки для поворота изображения -->
+        <div class="mt-4">
+            <button id="rotateClockwise" class="bg-yellow-500 text-white font-semibold py-2 px-4 rounded hover:bg-yellow-700 transition duration-300">Повернуть по часовой стрелке</button>
+            <button id="rotateCounterClockwise" class="bg-red-500 text-white font-semibold py-2 px-4 rounded hover:bg-red-700 transition duration-300">Повернуть против часовой стрелки</button>
+        </div>
     </div>
 
     <script>
@@ -43,7 +54,8 @@
         const preserveAspectRatioCheckbox = document.getElementById('preserveAspectRatio');
         const resizeButton = document.getElementById('resizeButton');
 
-        let img = new Image(); // Создаем объект изображения вне обработчика
+        let img = new Image(); // Создаем объект изображения
+        let currentRotation = 0; // Переменная для отслеживания текущего угла поворота
 
         input.addEventListener('change', function(e) {
             const file = e.target.files[0];
@@ -102,6 +114,32 @@
             link.click(); // Имитируем клик по ссылке для скачивания
             document.body.removeChild(link); // Удаляем ссылку из документа
         });
+
+        document.getElementById('rotateClockwise').addEventListener('click', function() {
+            currentRotation += 90; // Увеличиваем угол поворота на 90 градусов
+            updateImageRotation();
+        });
+
+        document.getElementById('rotateCounterClockwise').addEventListener('click', function() {
+            currentRotation -= 90; // Уменьшаем угол поворота на 90 градусов
+            updateImageRotation();
+        });
+
+        function updateImageRotation() {
+            imgPreview.style.transform = `rotate(${currentRotation}deg)`; // Применяем поворот к изображению
+
+            // Обновляем размеры полей ввода в зависимости от текущего поворота
+            if (currentRotation % 180 !== 0) {
+                widthInput.placeholder = "Высота";
+                heightInput.placeholder = "Ширина";
+                [widthInput.value, heightInput.value] = [heightInput.value, widthInput.value];
+            } else {
+                widthInput.placeholder = "Ширина";
+                heightInput.placeholder = "Высота";
+            }
+
+            dimensionInputs.classList.remove('hidden'); // Убедитесь, что поля видимы после поворота
+        }
     </script>
 </body>
 </html>
